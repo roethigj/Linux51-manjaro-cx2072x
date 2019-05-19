@@ -28,6 +28,8 @@ source=("https://www.kernel.org/pub/linux/kernel/v5.x/linux-${_basekernel}.tar.x
         "${pkgbase}.preset" # standard config files for mkinitcpio ramdisk
         '60-linux.hook'     # pacman hook for depmod
         '90-linux.hook'     # pacman hook for initramfs regeneration
+        'HiFi.conf'			# cx2072x ucm
+        'bytchtcx2072x.conf' # cx2072x ucm 
         #"aufs4.x-rcN-${_aufs}.patch.bz2"
         #'aufs4-base.patch'
         #'aufs4-kbuild.patch'
@@ -170,7 +172,7 @@ build() {
 }
 
 package_linux51() {
-  pkgdesc="The ${pkgbase/linux/Linux} kernel and modules"
+  pkgdesc="The ${pkgbase/linux/Linux} kernel and modules with cx2072x patch"
   depends=('coreutils' 'linux-firmware' 'kmod' 'mkinitcpio>=0.7')
   optdepends=('crda: to set the correct wireless channels of your country')
   provides=("linux=${pkgver}")
@@ -228,6 +230,12 @@ package_linux51() {
   # install mkinitcpio preset file
   sed "${_subst}" ${srcdir}/linux51.preset |
     install -Dm644 /dev/stdin "${pkgdir}/etc/mkinitcpio.d/${pkgbase}.preset"
+    
+  # install Alsa ucm files
+  sed "${_subst}" ${srcdir}/HiFi.conf
+    install -Dm644 /dev/stdin "${pkgdir}/usr/share/alsa/ucm/bytchtcx2072x/HiFi.conf
+  sed "${_subst}" ${srcdir}/bytchtcx2072x.conf
+    install -Dm644 /dev/stdin "${pkgdir}/usr/share/alsa/ucm/bytchtcx2072x/bytchtcx2072x.conf     
 
   # install pacman hooks
   sed "${_subst}" ${srcdir}/60-linux.hook |
