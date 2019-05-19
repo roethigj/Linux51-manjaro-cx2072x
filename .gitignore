@@ -1,2 +1,5 @@
 *.xz
 *.pkg
+/linux51-5.1.1-2-x86_64-prepare.log
+/linux51-5.1.1-2-x86_64-build.log
+/linux51-5.1.1-2-x86_64-package_linux51.log
