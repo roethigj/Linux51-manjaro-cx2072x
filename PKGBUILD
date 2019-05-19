@@ -235,9 +235,9 @@ package_linux51() {
     
   # install Alsa ucm files
   sed "${_subst}" ${srcdir}/HiFi.conf
-    install -Dm644 /dev/stdin "${pkgdir}/usr/share/alsa/ucm/bytchtcx2072x/HiFi.conf
+    install -Dm644 /dev/stdin "${pkgdir}/usr/share/alsa/ucm/bytchtcx2072x/HiFi.conf"
   sed "${_subst}" ${srcdir}/bytchtcx2072x.conf
-    install -Dm644 /dev/stdin "${pkgdir}/usr/share/alsa/ucm/bytchtcx2072x/bytchtcx2072x.conf     
+    install -Dm644 /dev/stdin "${pkgdir}/usr/share/alsa/ucm/bytchtcx2072x/bytchtcx2072x.conf"
 
   # install pacman hooks
   sed "${_subst}" ${srcdir}/60-linux.hook |
