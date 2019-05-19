@@ -7,7 +7,7 @@
 
 pkgbase=linux51
 pkgname=('linux51' 'linux51-headers')
-_kernelname=-MANJARO
+_kernelname=-MANJARO-CX2072X
 _basekernel=5.1
 _basever=51
 _aufs=20181217
@@ -54,9 +54,11 @@ source=("https://www.kernel.org/pub/linux/kernel/v5.x/linux-${_basekernel}.tar.x
         '0010-bootsplash.patch'
         '0011-bootsplash.patch'
         '0012-bootsplash.patch'
-        '0013-bootsplash.patch')
+        '0013-bootsplash.patch'
+        '0014-cx2072x_codec.patch'
+        '0015-cx2072x_driver.patch')
 sha256sums=('d06a7be6e73f97d1350677ad3bae0ce7daecb79c2c2902aaabe806f7fa94f041'
-            'd2d6782474da294effb5076f74227381aadd5a7b10328335693f1df20d1d4382'
+            'b7ea82d8622ef2c2bbe225fc199a60b68d4a31432a8453db3a45676e61b088ac'
             'c9d50709c031cf994093f7cf1ac00d2915529ad2d5ea05d901258050ad354076'
             'f5903377d29fc538af98077b81982efdc091a8c628cb85566e88e1b5018f12bf'
             '43942683a7ff01b180dff7f3de2db4885d43ab3d4e7bd0e1918c3aaf2ee061f4'
@@ -75,7 +77,9 @@ sha256sums=('d06a7be6e73f97d1350677ad3bae0ce7daecb79c2c2902aaabe806f7fa94f041'
             'e9f22cbb542591087d2d66dc6dc912b1434330ba3cd13d2df741d869a2c31e89'
             '27471eee564ca3149dd271b0817719b5565a9594dc4d884fe3dc51a5f03832bc'
             '60e295601e4fb33d9bf65f198c54c7eb07c0d1e91e2ad1e0dd6cd6e142cb266d'
-            '035ea4b2a7621054f4560471f45336b981538a40172d8f17285910d4e0e0b3ef')
+            '035ea4b2a7621054f4560471f45336b981538a40172d8f17285910d4e0e0b3ef'
+            '2dd7197ead618014cc9da6720d237ba0fcda472194bb13fbba17a441a2e7ac79'
+            '662fe80201fa4d2203ed61f8678f6c11cb243762abe71b94e4b89ee88b128ac8')
 prepare() {
   cd "${srcdir}/linux-${_basekernel}"
 
@@ -102,9 +106,14 @@ prepare() {
   patch -Np1 -i "${srcdir}/0009-bootsplash.patch"
   patch -Np1 -i "${srcdir}/0010-bootsplash.patch"
   patch -Np1 -i "${srcdir}/0011-bootsplash.patch"
-  patch -Np1 -i "${srcdir}/0012-bootsplash.patch"
+  patch -Np1 -i "${srcdir}/0012-bootsplash.patch" 
+  
   # use git-apply to add binary files
   git apply -p1 < "${srcdir}/0013-bootsplash.patch"
+
+  # apply Conexant cx2072 patches
+  patch -Np1 -i "${srcdir}/0014-cx2072x_codec.patch"
+  patch -Np1 -i "${srcdir}/0015-cx2072x_driver.patch"
 
   # add aufs4 support
 #  patch -Np1 -i "${srcdir}/aufs4.x-rcN-${_aufs}.patch"
@@ -157,7 +166,7 @@ build() {
   cd "${srcdir}/linux-${_basekernel}"
 
   # build!
-  make ${MAKEFLAGS} LOCALVERSION= bzImage modules
+  make ${MAKEFLAGS} -j4 LOCALVERSION= bzImage modules
 }
 
 package_linux51() {
