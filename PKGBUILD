@@ -234,7 +234,7 @@ package_linux51() {
     install -Dm644 /dev/stdin "${pkgdir}/etc/mkinitcpio.d/${pkgbase}.preset"
     
   # install Alsa ucm files
-    install -Dm644 -t ${pkgdir}/usr/share/alsa/ucm/bytchtcx2072x HiFi.conf bytchtcx2072x.conf
+    install -Dm644 -t "${pkgdir}/usr/share/alsa/ucm/bytchtcx2072x" HiFi.conf bytchtcx2072x.conf
 
   # install pacman hooks
   sed "${_subst}" ${srcdir}/60-linux.hook |
