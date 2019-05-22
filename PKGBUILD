@@ -13,7 +13,7 @@ _basever=51
 _aufs=20181217
 _bfq=v9
 _bfqdate=20181212
-_sub=3
+_sub=4
 pkgver=${_basekernel}.${_sub}
 pkgrel=1
 arch=('i686' 'x86_64')
@@ -41,6 +41,7 @@ source=("https://www.kernel.org/pub/linux/kernel/v5.x/linux-${_basekernel}.tar.x
         # ARCH Patches
         0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
         # MANJARO Patches
+        0001-dm-make-sure-to-obey-max_io_len_target_boundary.patch
         # Bootsplash
         '0001-bootsplash.patch'
         '0002-bootsplash.patch'
@@ -89,6 +90,9 @@ prepare() {
 
   # disable USER_NS for non-root users by default
   patch -Np1 -i ../0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
+
+  # https://forum.manjaro.org/t/88360
+  patch -Np1 -i ../0001-dm-make-sure-to-obey-max_io_len_target_boundary.patch
 
   # Add bootsplash - http://lkml.iu.edu/hypermail/linux/kernel/1710.3/01542.html
   patch -Np1 -i "${srcdir}/0001-bootsplash.patch"
