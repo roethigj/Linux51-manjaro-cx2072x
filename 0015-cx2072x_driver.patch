@@ -1,8 +1,8 @@
 diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 12d6b73e9531..e8494ef96447 100644
+index e39473a6a5d9..59e366edc16b 100644
 --- a/sound/soc/intel/boards/Kconfig
 +++ b/sound/soc/intel/boards/Kconfig
-@@ -136,6 +136,17 @@ config SND_SOC_INTEL_CHT_BSW_NAU8824_MACH
+@@ -155,6 +155,17 @@ config SND_SOC_INTEL_CHT_BSW_NAU8824_MACH
  	  Say Y or m if you have such a device. This is a recommended option.
  	  If unsure select "N".
  
@@ -19,9 +19,9 @@ index 12d6b73e9531..e8494ef96447 100644
 +
  config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
  	tristate "Baytrail & Cherrytrail with DA7212/7213 codec"
- 	depends on X86_INTEL_LPSS && I2C && ACPI
+ 	depends on I2C && ACPI
 diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index bf072ea299b7..098ad7998b43 100644
+index 451b3bd7d9c5..6445f90ea542 100644
 --- a/sound/soc/intel/boards/Makefile
 +++ b/sound/soc/intel/boards/Makefile
 @@ -13,6 +13,7 @@ snd-soc-sst-cht-bsw-rt5672-objs := cht_bsw_rt5672.o
@@ -32,7 +32,7 @@ index bf072ea299b7..098ad7998b43 100644
  snd-soc-sst-byt-cht-da7213-objs := bytcht_da7213.o
  snd-soc-sst-byt-cht-es8316-objs := bytcht_es8316.o
  snd-soc-sst-byt-cht-nocodec-objs := bytcht_nocodec.o
-@@ -40,6 +41,7 @@ obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5672_MACH) += snd-soc-sst-cht-bsw-rt5672.o
+@@ -42,6 +43,7 @@ obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5672_MACH) += snd-soc-sst-cht-bsw-rt5672.o
  obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5645_MACH) += snd-soc-sst-cht-bsw-rt5645.o
  obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH) += snd-soc-sst-cht-bsw-max98090_ti.o
  obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_NAU8824_MACH) += snd-soc-sst-cht-bsw-nau8824.o
@@ -42,14 +42,14 @@ index bf072ea299b7..098ad7998b43 100644
  obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH) += snd-soc-sst-byt-cht-nocodec.o
 diff --git a/sound/soc/intel/boards/bytcht_cx2072x.c b/sound/soc/intel/boards/bytcht_cx2072x.c
 new file mode 100644
-index 000000000000..75b6ff4f822c
+index 000000000000..b21b0e7f981a
 --- /dev/null
 +++ b/sound/soc/intel/boards/bytcht_cx2072x.c
-@@ -0,0 +1,283 @@
+@@ -0,0 +1,262 @@
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+//  bytcht_cx207x.c - ASoC DPCM Machine driver for Baytrail / CherryTrail
-+//                    platforms with CX2072X codec
++// ASoC DPCM Machine driver for Baytrail / Cherrytrail platforms with
++// CX2072X codec
 +//
 +
 +#include <linux/acpi.h>
@@ -86,8 +86,6 @@ index 000000000000..75b6ff4f822c
 +	{"codec_in0", NULL, "ssp2 Rx"},
 +	{"codec_in1", NULL, "ssp2 Rx"},
 +	{"ssp2 Rx", NULL, "Capture"},
-+	{"ssp0 Tx", NULL, "modem_out"},
-+	{"modem_in", NULL, "ssp0 Rx"},
 +};
 +
 +static const struct snd_kcontrol_new byt_cht_cx2072x_controls[] = {
@@ -115,19 +113,6 @@ index 000000000000..75b6ff4f822c
 +static const struct acpi_gpio_mapping byt_cht_cx2072x_acpi_gpios[] = {
 +	{ "headset-gpios", &byt_cht_cx2072x_headset_gpios, 1 },
 +	{},
-+};
-+
-+static int byt_cht_cx2072x_jack_status_check(void *data)
-+{
-+	return snd_soc_cx2072x_get_jack_state(data);
-+}
-+
-+static struct snd_soc_jack_gpio byt_cht_cx2072x_gpio = {
-+	.name = "headset",
-+	.report = SND_JACK_HEADSET | SND_JACK_BTN_0,
-+	.debounce_time = 150,
-+	.wake = true,
-+	.jack_status_check = byt_cht_cx2072x_jack_status_check,
 +};
 +
 +static int byt_cht_cx2072x_init(struct snd_soc_pcm_runtime *rtd)
@@ -158,16 +143,9 @@ index 000000000000..75b6ff4f822c
 +	if (ret)
 +		return ret;
 +
-+	byt_cht_cx2072x_gpio.gpiod_dev = codec->dev;
-+	byt_cht_cx2072x_gpio.data = codec;
-+	ret = snd_soc_jack_add_gpios(&byt_cht_cx2072x_headset, 1,
-+				     &byt_cht_cx2072x_gpio);
-+	if (ret) {
-+		dev_err(rtd->dev, "Adding jack GPIO failed\n");
-+		return ret;
-+	}
++	snd_soc_component_set_jack(codec, &byt_cht_cx2072x_headset, NULL);
 +
-+	snd_soc_cx2072x_enable_jack_detect(codec);
++	snd_soc_dai_set_bclk_ratio(rtd->codec_dai, 50);
 +
 +	return ret;
 +}
@@ -208,7 +186,6 @@ index 000000000000..75b6ff4f822c
 +		return ret;
 +	}
 +
-+	snd_soc_dai_set_bclk_ratio(rtd->codec_dai, 50);
 +	return 0;
 +}
 +
@@ -251,7 +228,7 @@ index 000000000000..75b6ff4f822c
 +	/* back ends */
 +	{
 +		.name = "SSP2-Codec",
-+		.id = 1,
++		.id = 0,
 +		.cpu_dai_name = "ssp2-port",
 +		.platform_name = "sst-mfld-platform",
 +		.no_pcm = 1,
@@ -286,7 +263,7 @@ index 000000000000..75b6ff4f822c
 +static int snd_byt_cht_cx2072x_probe(struct platform_device *pdev)
 +{
 +	struct snd_soc_acpi_mach *mach;
-+	const char *i2c_name;
++	struct acpi_device *adev;
 +	int dai_index = 0;
 +	int i, ret;
 +
@@ -303,9 +280,11 @@ index 000000000000..75b6ff4f822c
 +	}
 +
 +	/* fixup codec name based on HID */
-+	i2c_name = acpi_dev_get_first_match_name(mach->id, NULL, -1);
-+	if (i2c_name) {
-+		snprintf(codec_name, sizeof(codec_name), "i2c-%s", i2c_name);
++	adev = acpi_dev_get_first_match_dev(mach->id, NULL, -1);
++	if (adev) {
++		snprintf(codec_name, sizeof(codec_name), "i2c-%s",
++			 acpi_dev_name(adev));
++		put_device(&adev->dev);
 +		byt_cht_cx2072x_dais[dai_index].codec_name = codec_name;
 +	}
 +
@@ -330,10 +309,10 @@ index 000000000000..75b6ff4f822c
 +MODULE_LICENSE("GPL v2");
 +MODULE_ALIAS("platform:bytcht_cx2072x");
 diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-index fe812a909db4..afeb56797e74 100644
+index 0cfab247876a..9cc7b17e0b10 100644
 --- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
 +++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-@@ -211,6 +211,14 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
+@@ -217,6 +217,14 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
  		.sof_fw_filename = "sof-byt.ri",
  		.sof_tplg_filename = "sof-byt-max98090.tplg",
  	},
@@ -349,10 +328,10 @@ index fe812a909db4..afeb56797e74 100644
  	/*
  	 * This is always last in the table so that it is selected only when
 diff --git a/sound/soc/intel/common/soc-acpi-intel-cht-match.c b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-index deafd87cc764..4a2dac0ee596 100644
+index ff9c31a39ad4..6d0755f1353a 100644
 --- a/sound/soc/intel/common/soc-acpi-intel-cht-match.c
 +++ b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-@@ -169,6 +169,14 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
+@@ -175,6 +175,14 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
  		.sof_fw_filename = "sof-cht.ri",
  		.sof_tplg_filename = "sof-cht-rt5651.tplg",
  	},
@@ -367,4 +346,3 @@ index deafd87cc764..4a2dac0ee596 100644
  #if IS_ENABLED(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH)
  	/*
  	 * This is always last in the table so that it is selected only when
-

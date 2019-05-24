@@ -61,11 +61,7 @@ source=("https://www.kernel.org/pub/linux/kernel/v5.x/linux-${_basekernel}.tar.x
         '0014-cx2072x_codec.patch'
         '0015-cx2072x_driver.patch')
 sha256sums=('d06a7be6e73f97d1350677ad3bae0ce7daecb79c2c2902aaabe806f7fa94f041'
-<<<<<<< HEAD
-            'b7ea82d8622ef2c2bbe225fc199a60b68d4a31432a8453db3a45676e61b088ac'
-=======
             'ccf55cf1f6fab09419bee802dbe2029b69467ae78fbaeb669d5ce0bea631fab8'
->>>>>>> f46aeef9018d70db3f56f0708335062959bbe0bd
             'c9d50709c031cf994093f7cf1ac00d2915529ad2d5ea05d901258050ad354076'
             'f5903377d29fc538af98077b81982efdc091a8c628cb85566e88e1b5018f12bf'
             '43942683a7ff01b180dff7f3de2db4885d43ab3d4e7bd0e1918c3aaf2ee061f4'
@@ -88,8 +84,8 @@ sha256sums=('d06a7be6e73f97d1350677ad3bae0ce7daecb79c2c2902aaabe806f7fa94f041'
             '27471eee564ca3149dd271b0817719b5565a9594dc4d884fe3dc51a5f03832bc'
             '60e295601e4fb33d9bf65f198c54c7eb07c0d1e91e2ad1e0dd6cd6e142cb266d'
             '035ea4b2a7621054f4560471f45336b981538a40172d8f17285910d4e0e0b3ef'
-            '2dd7197ead618014cc9da6720d237ba0fcda472194bb13fbba17a441a2e7ac79'
-            '662fe80201fa4d2203ed61f8678f6c11cb243762abe71b94e4b89ee88b128ac8')
+            'efba979390faae4f5ece5714c0b83ac28518d56354fac6866495ff2da5e7194a'
+            '92ea2aa1e8fe7493c665e4232a366ce33a7957cf7a4594ec227dcfb116e13b6a')
 prepare() {
   cd "${srcdir}/linux-${_basekernel}"
 
@@ -188,7 +184,7 @@ package_linux51-cx2072x() {
   optdepends=('crda: to set the correct wireless channels of your country')
   provides=("linux=${pkgver}")
   backup=("etc/mkinitcpio.d/${pkgbase}.preset")
-  install=${pkgname}.install
+  install=${pkgbase}.install
 
   cd "${srcdir}/linux-${_basekernel}"
 
