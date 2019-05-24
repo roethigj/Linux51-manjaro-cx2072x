@@ -1,3 +1,4 @@
+
 diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
 index e39473a6a5d9..59e366edc16b 100644
 --- a/sound/soc/intel/boards/Kconfig
@@ -45,7 +46,7 @@ new file mode 100644
 index 000000000000..b21b0e7f981a
 --- /dev/null
 +++ b/sound/soc/intel/boards/bytcht_cx2072x.c
-@@ -0,0 +1,262 @@
+@@ -0,0 +1,261 @@
 +// SPDX-License-Identifier: GPL-2.0
 +//
 +// ASoC DPCM Machine driver for Baytrail / Cherrytrail platforms with
@@ -263,7 +264,7 @@ index 000000000000..b21b0e7f981a
 +static int snd_byt_cht_cx2072x_probe(struct platform_device *pdev)
 +{
 +	struct snd_soc_acpi_mach *mach;
-+	struct acpi_device *adev;
++	const char *i2c_name;
 +	int dai_index = 0;
 +	int i, ret;
 +
@@ -280,11 +281,10 @@ index 000000000000..b21b0e7f981a
 +	}
 +
 +	/* fixup codec name based on HID */
-+	adev = acpi_dev_get_first_match_dev(mach->id, NULL, -1);
-+	if (adev) {
++	i2c_name = acpi_dev_get_first_match_name(mach->id, NULL, -1);
++	if (i2c_name) {
 +		snprintf(codec_name, sizeof(codec_name), "i2c-%s",
-+			 acpi_dev_name(adev));
-+		put_device(&adev->dev);
++			 i2c_name);
 +		byt_cht_cx2072x_dais[dai_index].codec_name = codec_name;
 +	}
 +
@@ -346,3 +346,4 @@ index ff9c31a39ad4..6d0755f1353a 100644
  #if IS_ENABLED(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH)
  	/*
  	 * This is always last in the table so that it is selected only when
+
