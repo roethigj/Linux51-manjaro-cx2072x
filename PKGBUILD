@@ -29,7 +29,7 @@ source=("https://www.kernel.org/pub/linux/kernel/v5.x/linux-${_basekernel}.tar.x
         '60-linux.hook'     # pacman hook for depmod
         '90-linux.hook'     # pacman hook for initramfs regeneration
         'HiFi.conf'			# cx2072x ucm
-        'bytchtcx2072x.conf' # cx2072x ucm 
+        'bytcht-cx2072x.conf' # cx2072x ucm 
         #"aufs4.x-rcN-${_aufs}.patch.bz2"
         #'aufs4-base.patch'
         #'aufs4-kbuild.patch'
@@ -85,7 +85,7 @@ sha256sums=('d06a7be6e73f97d1350677ad3bae0ce7daecb79c2c2902aaabe806f7fa94f041'
             '60e295601e4fb33d9bf65f198c54c7eb07c0d1e91e2ad1e0dd6cd6e142cb266d'
             '035ea4b2a7621054f4560471f45336b981538a40172d8f17285910d4e0e0b3ef'
             'efba979390faae4f5ece5714c0b83ac28518d56354fac6866495ff2da5e7194a'
-            '92ea2aa1e8fe7493c665e4232a366ce33a7957cf7a4594ec227dcfb116e13b6a')
+            'ea3dd830c8a7bef689c8fe5182f67eb20fcf58c4d3f4d459802bd71f5e6f7a72')
 prepare() {
   cd "${srcdir}/linux-${_basekernel}"
 
@@ -239,7 +239,7 @@ package_linux51-cx2072x() {
     install -Dm644 /dev/stdin "${pkgdir}/etc/mkinitcpio.d/${pkgbase}.preset"
     
   # install Alsa ucm files
-    install -Dm644 -t "${pkgdir}/usr/share/alsa/ucm/bytchtcx2072x" "${srcdir}"/HiFi.conf "${srcdir}"/bytchtcx2072x.conf
+    install -Dm644 -t "${pkgdir}/usr/share/alsa/ucm/bytchtcx2072x" "${srcdir}"/HiFi.conf "${srcdir}"/bytcht-cx2072x.conf
 
   # install pacman hooks
   sed "${_subst}" ${srcdir}/60-linux.hook |
