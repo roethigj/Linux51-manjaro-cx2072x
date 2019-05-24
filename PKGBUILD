@@ -13,9 +13,9 @@ _basever=51
 _aufs=20181217
 _bfq=v9
 _bfqdate=20181212
-_sub=1
+_sub=4
 pkgver=${_basekernel}.${_sub}
-pkgrel=2
+pkgrel=1
 arch=('i686' 'x86_64')
 url="http://www.kernel.org/"
 license=('GPL2')
@@ -43,6 +43,7 @@ source=("https://www.kernel.org/pub/linux/kernel/v5.x/linux-${_basekernel}.tar.x
         # ARCH Patches
         0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
         # MANJARO Patches
+        0001-dm-make-sure-to-obey-max_io_len_target_boundary.patch
         # Bootsplash
         '0001-bootsplash.patch'
         '0002-bootsplash.patch'
@@ -60,7 +61,11 @@ source=("https://www.kernel.org/pub/linux/kernel/v5.x/linux-${_basekernel}.tar.x
         '0014-cx2072x_codec.patch'
         '0015-cx2072x_driver.patch')
 sha256sums=('d06a7be6e73f97d1350677ad3bae0ce7daecb79c2c2902aaabe806f7fa94f041'
+<<<<<<< HEAD
             'b7ea82d8622ef2c2bbe225fc199a60b68d4a31432a8453db3a45676e61b088ac'
+=======
+            'ccf55cf1f6fab09419bee802dbe2029b69467ae78fbaeb669d5ce0bea631fab8'
+>>>>>>> f46aeef9018d70db3f56f0708335062959bbe0bd
             'c9d50709c031cf994093f7cf1ac00d2915529ad2d5ea05d901258050ad354076'
             'f5903377d29fc538af98077b81982efdc091a8c628cb85566e88e1b5018f12bf'
             '43942683a7ff01b180dff7f3de2db4885d43ab3d4e7bd0e1918c3aaf2ee061f4'
@@ -69,6 +74,7 @@ sha256sums=('d06a7be6e73f97d1350677ad3bae0ce7daecb79c2c2902aaabe806f7fa94f041'
             '76b0cd7636d5bafcaf7a065208711006ecbec672ce13a29803ba70ea51a35e26'
             '8d0ede122c8b881978af8a3cbae194129675fed59eda584931489e95b3d27f0b'
             '37b86ca3de148a34258e3176dbf41488d9dbd19e93adbd22a062b3c41332ce85'
+            'aa377aee7585911972e61925314c764e9fbeb3f3227e4e37a8cf0821a4a7951b'
             'a504f6cf84094e08eaa3cc5b28440261797bf4f06f04993ee46a20628ff2b53c'
             'e096b127a5208f56d368d2cb938933454d7200d70c86b763aa22c38e0ddb8717'
             '8c1c880f2caa9c7ae43281a35410203887ea8eae750fe8d360d0c8bf80fcc6e0'
@@ -97,6 +103,9 @@ prepare() {
 
   # disable USER_NS for non-root users by default
   patch -Np1 -i ../0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
+
+  # https://forum.manjaro.org/t/88360
+  patch -Np1 -i ../0001-dm-make-sure-to-obey-max_io_len_target_boundary.patch
 
   # Add bootsplash - http://lkml.iu.edu/hypermail/linux/kernel/1710.3/01542.html
   patch -Np1 -i "${srcdir}/0001-bootsplash.patch"
