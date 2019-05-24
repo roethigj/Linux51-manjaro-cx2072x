@@ -6,7 +6,7 @@
 # Maintainer: Jonathon Fernyhough (i686) <jonathon@manjaro.org>
 
 pkgbase=linux51
-pkgname=('linux51' 'linux51-headers')
+pkgname=('linux51-cx2072x' 'linux51-headers-cx2072x')
 _kernelname=-MANJARO-CX2072X
 _basekernel=5.1
 _basever=51
@@ -158,7 +158,7 @@ prepare() {
   # Configure the kernel. Replace the line below with one of your choice.
   #make menuconfig # CLI menu for configuration
   #make nconfig # new CLI menu for configuration
-  #make xconfig # X-based configuration
+  make xconfig # X-based configuration
   #make oldconfig # using old config from previous kernel version
   # ... or manually edit .config
 
@@ -173,7 +173,7 @@ build() {
   make ${MAKEFLAGS} -j4 LOCALVERSION= bzImage modules
 }
 
-package_linux51() {
+package_linux51-cx2072x() {
   pkgdesc="The ${pkgbase/linux/Linux} kernel and modules with cx2072x patch"
   depends=('coreutils' 'linux-firmware' 'kmod' 'mkinitcpio>=0.7')
   optdepends=('crda: to set the correct wireless channels of your country')
@@ -243,7 +243,7 @@ package_linux51() {
     install -Dm644 /dev/stdin "${pkgdir}/usr/share/libalpm/hooks/90-${pkgbase}.hook"
 }
 
-package_linux51-headers() {
+package_linux51-headers-cx2072x() {
   pkgdesc="Header files and scripts for building modules for ${pkgbase/linux/Linux} kernel"
   provides=("linux-headers=$pkgver")
 
